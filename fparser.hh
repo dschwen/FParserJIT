@@ -24,6 +24,9 @@
 #pragma warning(disable : 4661)
 #endif
 
+template<typename Value_t>
+class FunctionParserADBase;
+
 namespace FPoptimizer_CodeTree { template<typename Value_t> class CodeTree; }
 
 template<typename Value_t>
@@ -94,13 +97,19 @@ class FunctionParserBase
 
 
     FunctionParserBase();
-    ~FunctionParserBase();
+    virtual ~FunctionParserBase();
 
     // Copy constructor and assignment operator (implemented using the
     // copy-on-write technique for efficiency):
     FunctionParserBase(const FunctionParserBase&);
     FunctionParserBase& operator=(const FunctionParserBase&);
 
+    // This class manages its own memory via reference counting, so the
+    // compiler-generated move constructor and move assignment operator
+    // are not safe to use. By explicitly deleting them we can prevent
+    // users from assuming this class can be moved when it really can't.
+    FunctionParserBase (FunctionParserBase &&) = delete;
+    FunctionParserBase & operator= (FunctionParserBase &&) = delete;
 
     void ForceDeepCopy();
 
@@ -132,6 +141,7 @@ class FunctionParserBase
  private:
 //========================================================================
 
+    friend class FunctionParserADBase<Value_t>;
     friend class FPoptimizer_CodeTree::CodeTree<Value_t>;
 
 // Private data:
