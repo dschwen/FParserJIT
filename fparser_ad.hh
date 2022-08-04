@@ -6,6 +6,8 @@
 #include <iostream>
 #include <fstream>
 
+#define LIBMESH_HAVE_FPARSER_JIT
+
 template<typename Value_t>
 class ADImplementation;
 
